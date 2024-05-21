@@ -3,7 +3,7 @@ members = [
     "client",
     "proto",
     "solana_txn"
-]
+, "solana_ws"]
 
 # This prevents a Travis CI error when building for Windows.
 resolver = "2"
