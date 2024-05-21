@@ -13,8 +13,10 @@ async fn main() {
     loop{
         if let Some(m) = r.next().await{
             let m = m.expect("failed to read message");
-            let v:Value = serde_json::from_str(m).expect("cannot unpack");
-            println!(v["params"]["result"]["slot"]); 
+            let m = m.into_text().expect("failed to convert to a string");
+            let m = m.as_str();
+            let v:Value = serde_json::from_str(&m).expect("cannot unpack");
+            println!("{}",v["params"]["result"]["slot"]); 
         }        
     }
 
