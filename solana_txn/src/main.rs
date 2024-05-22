@@ -42,7 +42,7 @@ async fn main (){
         match transaction_update{
             None => {println!("error receiving update in loop");}
             Some(transaction_update)=>{
-               // println!("output: {transaction_update:?}");
+               println!("output: {transaction_update:?}");
                 if let Some(ts) = transaction_update.ts{
                     println!("{ts:?}");
                 }
