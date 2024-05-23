@@ -4194,9 +4194,14 @@ name = "solana_ws"
 version = "1.18.1"
 dependencies = [
  "futures-util",
+ "jito-geyser-protos",
+ "serde",
  "serde_json",
+ "solana-client",
+ "solana-sdk",
  "tokio",
  "tokio-tungstenite 0.21.0",
+ "tonic",
 ]
 
 [[package]]
