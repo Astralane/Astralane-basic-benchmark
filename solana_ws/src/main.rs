@@ -74,40 +74,53 @@ async fn main() {
     let channel = endpoint.connect().await.expect("connect");
     let mut client = GeyserClient::with_interceptor(channel, intrcptr);
     
+    let mut score_ws:i32=0;
+    let mut score_grpc:i32=0;           
+           
     loop{
        
 
 
         //current slot from ws
+        
+        let mut stream = client.subscribe_slot_updates(SubscribeSlotUpdateRequest {}).await.expect("couldn't get stream").into_inner();
+        let slot_grpc=stream.message().await.expect("not getting slot update from grpc");
         let m=r.next().await.unwrap();
+
         let m = m.expect("failed to read message");
         let m = m.into_text().expect("failed to convert to a string");
         let m = m.as_str();    
         let v:SolanaApiOutput = serde_json::from_str(&m).expect("cannot unpack");
         let slot_num_ws=v.params.result.slot as u64;
          // current slot from grpc
-        let mut stream = client.subscribe_slot_updates(SubscribeSlotUpdateRequest {}).await.expect("couldn't get stream").into_inner();
-        let slot_grpc=stream.message().await.expect("not getting slot update from grpc");
         
         let slot_up=slot_grpc.unwrap().slot_update.unwrap();
-        let slot_num_grpc=slot_up.slot;        
+        let slot_num_grpc=slot_up.slot;
+
         if slot_up.status == 1{
             match slot_num_grpc.cmp(&slot_num_ws){
-                Ordering::Less => println!("our validator is losing by {} slot_ws : {slot_num_ws} slot_grpc: {slot_num_grpc}",slot_num_ws-slot_num_grpc),
-                Ordering::Greater => println!("our validator is winning by {}",slot_num_grpc-slot_num_ws),
+                Ordering::Less => {
+                    println!("our validator is losing by {} slot_ws : {slot_num_ws} slot_grpc: {slot_num_grpc}",slot_num_ws-slot_num_grpc);
+                    score_ws+=(slot_num_ws-slot_num_grpc) as i32;
+                },
+                Ordering::Greater => {
+                    println!("our validator is winning by {}",slot_num_grpc-slot_num_ws);
+                    score_grpc+=(slot_num_grpc-slot_num_ws) as i32;
+                },
                 Ordering::Equal => println!("they are both equal"),
 
             }
            
         }
         if slot_num_grpc==starting_slot || slot_num_ws == starting_slot {
+            println!("ws {score_ws}, grpc {score_grpc}");
             break;
         }
     }
 
 }
- fn intrcptr(mut request: tonic::Request<()>) -> Result<tonic::Request<()>, Status> {
-        request.metadata_mut();
+fn intrcptr(request: tonic::Request<()>) -> Result<tonic::Request<()>, Status> {
+        // request.metadata_mut();
 //            .insert("access-token", self.access_token.parse().unwrap());
         Ok(request)
 }
