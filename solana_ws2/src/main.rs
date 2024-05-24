@@ -74,7 +74,7 @@ async fn main() {
     // println!("{m}");    
     let v:SolanaApiOutput = serde_json::from_str(&m).expect("cannot unpack");
     let mut starting_slot:u64= v.params.result.slot as u64; 
-    starting_slot+=10;
+    starting_slot+=100;
     println!("staring at slot {starting_slot}");
     // creating channel for mpsc
     let (tx, mut rx) = mpsc::channel(16);
@@ -103,7 +103,7 @@ async fn main() {
             final_slots.push(message.value);
         }
     }                  
-    println!(" ws {ws_score}, grpc {grpc_score} \n slot list \n {final_slots:#?}");       
+    println!(" ws {}%, grpc {}%, equal {}% \n ", ws_score ,grpc_score ,100-ws_score+grpc_score);       
     for handle in handles{
         handle.await.unwrap();
     }

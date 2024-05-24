@@ -1,5 +1,5 @@
 [package]
-name = "solana_ws"
+name = "solana_ws2"
 version.workspace = true
 license.workspace = true
 authors.workspace = true

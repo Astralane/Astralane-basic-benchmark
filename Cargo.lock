@@ -4205,6 +4205,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana_ws2"
+version = "1.18.1"
+dependencies = [
+ "futures-util",
+ "jito-geyser-protos",
+ "serde",
+ "serde_json",
+ "solana-client",
+ "solana-sdk",
+ "tokio",
+ "tokio-tungstenite 0.21.0",
+ "tonic",
+]
+
+[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
