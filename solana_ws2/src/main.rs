@@ -103,7 +103,7 @@ async fn main() {
             final_slots.push(message.value);
         }
     }                  
-    println!(" ws {}%, grpc {}%, equal {}% \n ", ws_score ,grpc_score ,100-ws_score+grpc_score);       
+    println!(" ws {}%, grpc {}%, equal {}% \n ", ws_score ,grpc_score ,100-(ws_score+grpc_score));       
     for handle in handles{
         handle.await.unwrap();
     }
